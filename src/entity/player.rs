@@ -1,4 +1,4 @@
-//玩家所有相关系统
+//!玩家所有相关系统
 
 use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::{AssetServer, transformer}, ecs::{component::Component, query::With, system::{Commands, Query, Res, Single}}, input::{ButtonInput, mouse::MouseButton}, math::Vec2, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
 use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}};

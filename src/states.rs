@@ -1,4 +1,4 @@
-//游戏状态
+//!游戏状态
 use bevy::ecs::event::Event;
 
 ///游戏结束标志位

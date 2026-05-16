@@ -1,4 +1,4 @@
-//相机的初始化
+//!相机的初始化
 
 use bevy::{app::{App, Plugin, Startup}, camera::{Camera2d, OrthographicProjection, Projection, ScalingMode}, ecs::system::Commands};
 
@@ -12,7 +12,7 @@ impl Plugin for Camera {
     }
 }
 
-//创建摄像头实体
+///创建摄像头实体
 fn camera_start_up(mut commands: Commands) {
     commands.spawn((
        Camera2d,

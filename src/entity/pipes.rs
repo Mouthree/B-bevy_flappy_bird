@@ -2,7 +2,7 @@ use bevy::{app::{App, Plugin}, asset::{AssetServer, Handle}, camera::visibility:
 
 use crate::constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE};
 
-///管道
+///整个管道
 #[derive(Component)]
 pub struct Pipe;
 
@@ -14,7 +14,6 @@ pub struct PipeTop;
 #[derive(Component)]
 pub struct PipeBotton;
 
-//管道相关的
 pub struct PipPlugin;
 impl Plugin for PipPlugin {
     fn build(&self, app: &mut App) {
@@ -22,7 +21,7 @@ impl Plugin for PipPlugin {
     }
 }
 
-///创建随机的管道
+///创建随机高度的管道
 fn pip_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>) {
     let image: Handle<Image> = asset_server.load("pipe.png");
     let image_mode = SpriteImageMode::Sliced(
