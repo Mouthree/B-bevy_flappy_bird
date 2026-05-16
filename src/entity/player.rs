@@ -12,7 +12,7 @@ pub struct Gravity(pub f32);
 #[derive(Component, Default)]
 pub struct Velocity(pub f32);
 
-//玩家插件
+///玩家插件
 #[derive(Component)]
 #[require(Gravity(700.), Velocity)]
 pub struct Player;
@@ -24,7 +24,7 @@ impl Plugin for Player {
             .add_systems(Update, controls);
     }
 }
-//创建玩家实体
+///创建玩家实体
 fn player_start_up(mut commands: Commands, assert_server: Res<AssetServer>) {
     commands.spawn((
        Player,
@@ -37,7 +37,7 @@ fn player_start_up(mut commands: Commands, assert_server: Res<AssetServer>) {
     ));
 }
 
-//重力
+///重力系统
 fn gravity(
     //遍历有这三个组件的实体
     mut transforms: Query<(
@@ -53,7 +53,7 @@ fn gravity(
     }
 }
 
-//按键
+///按键操作
 fn controls(
     mut velocity: Single<&mut Velocity, With<Player>>,
     buttons: Res<ButtonInput<MouseButton>>
@@ -65,7 +65,7 @@ fn controls(
     }
 }
 
-//碰到边界触发事件
+///碰到边界触发事件
 fn check_in_bounds(player: Single<&Transform, With<Player>>, mut commands: Commands) {
     if player.translation.y < -CANVAS_SIZE.y / 2. - PLAYER_SIZE || 
     player.translation.y > CANVAS_SIZE.y / 2. + PLAYER_SIZE {
