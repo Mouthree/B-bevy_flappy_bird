@@ -1,7 +1,7 @@
 //!管道
 use std::time::Duration;
 
-use bevy::{app::{App, FixedUpdate, Plugin}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, query::With, schedule::IntoScheduleConfigs, system::{Commands, Query, Res}}, image::{self, Image}, math::Vec2, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::components::Transform, utils::default};
+use bevy::{app::{App, FixedUpdate, Plugin}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, query::With, schedule::IntoScheduleConfigs, system::{Commands, Query, Res}}, image::{self, Image}, math::Vec2, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::components::Transform, utils::default};
 use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED}, entity::pipes};
 
 ///整个管道
@@ -94,8 +94,17 @@ fn pip_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Re
 ///设置管道移动
 fn pipe_move(mut pipes: Query<&mut Transform, With<PipeAll>>, time: Res<Time>) {
     for mut pipe in &mut pipes {
+        //TODO: 这个管道的显示依旧不清晰, 不知道为什么, 到时候研究一下怎么改
         pipe.translation.x -= PIPE_SPEED * time.delta_secs();
         pipe.translation.x = pipe.translation.x.round();
     }
 }
 
+///销毁出界管道
+fn pipe_del(mut commands: Commands, pipes: Query<(Entity, &Transform), With<PipeAll>>) {
+    for (entity, transform) in pipes.iter() {
+        if transform.translation.x < -(CANVAS_SIZE.x / 2. + PIPE_SIZE.x) {
+            commands.entity(entity).despawn();
+        }
+    }
+}
