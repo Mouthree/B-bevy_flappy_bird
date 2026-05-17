@@ -1,8 +1,8 @@
 //!管道
 use std::time::Duration;
 
-use bevy::{app::{App, FixedUpdate, Plugin, ctrlc::Signal}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, error::Result, query::{Or, With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, Single}}, gizmos::{gizmos::Gizmos, retained::Gizmo}, image::{self, Image}, log::info_span, math::{Vec2, Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::{self, components::Transform, helper::TransformHelper}, utils::default};
-use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED, PLAYER_SIZE}, entity::{pipes, player::Player}, event::{EndGame, ScoreAdd}};
+use bevy::{app::{App, FixedUpdate, Plugin, ctrlc::Signal}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, error::Result, observer::On, query::{Or, With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, gizmos::{gizmos::Gizmos, retained::Gizmo}, image::{self, Image}, log::info_span, math::{Vec2, Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::{self, components::Transform, helper::TransformHelper}, utils::default};
+use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED, PLAYER_SIZE}, entity::{pipes, player::Player}, event::{EndGame, ScoreAdd}, ui::score::Score};
 
 ///整个管道
 #[derive(Component)]
@@ -25,15 +25,17 @@ pub struct Pipe;
 impl Plugin for Pipe {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (
-           pip_start_up.run_if(on_timer(Duration::from_millis(1000))),
+           pipe_start_up.run_if(on_timer(Duration::from_millis(1000))),
            pipe_move,
-           pipe_del
+           pipe_del,
+           pipe_hit
         ));
+        app.add_observer(score_add);
     }
 }
 
 ///创建随机高度的管道
-fn pip_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>) {
+fn pipe_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>) {
     let image: Handle<Image> = asset_server.load("pipe.png");
     //设置图片显示模式为九宫格
     let image_mode = SpriteImageMode::Sliced(
@@ -146,4 +148,8 @@ fn pipe_hit(
         }
     }
     Ok(())
+}
+
+fn score_add(_: On<ScoreAdd>, mut score: ResMut<Score>) {
+    score.0 += 1;
 }

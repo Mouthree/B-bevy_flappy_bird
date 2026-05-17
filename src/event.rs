@@ -5,5 +5,6 @@ use bevy::ecs::event::Event;
 #[derive(Event)]
 pub struct EndGame;
 
+///标志位: 触发加分
 #[derive(Event)]
 pub struct ScoreAdd;
