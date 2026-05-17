@@ -97,9 +97,7 @@ fn pipe_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: R
 ///设置管道移动
 fn pipe_move(mut pipes: Query<&mut Transform, With<PipeAll>>, time: Res<Time>) {
     for mut pipe in &mut pipes {
-        //TODO: 这个管道的显示依旧不清晰, 不知道为什么, 到时候研究一下怎么改
         pipe.translation.x -= PIPE_SPEED * time.delta_secs();
-        pipe.translation.x = pipe.translation.x.round();
     }
 }
 
@@ -150,6 +148,7 @@ fn pipe_hit(
     Ok(())
 }
 
+///触发加分事件的时候加分
 fn score_add(_: On<ScoreAdd>, mut score: ResMut<Score>) {
     score.0 += 1;
 }
