@@ -119,18 +119,27 @@ fn pipe_hit(
     mut gizmos: Gizmos,
     transform_helper: TransformHelper
 ) -> Result<()> {
+    //获取到最新的player位置
     let player_transform = transform_helper.compute_global_transform(player.1)?;
+    //创建一个以玩家中心为原点, 玩家一半大的为半径的这个碰撞箱
     let player_collider = BoundingCircle::new(player_transform.translation().xy(), PLAYER_SIZE / 2.);
+    //处理所有的管道(上下两部分)
     for (sprite, entity) in &pipe_segments {
+        //获取管道实际坐标
         let pipe_transform = transform_helper.compute_global_transform(entity)?;
+        //方的碰撞箱
         let pipe_collider = Aabb2d::new(pipe_transform.translation().xy(), sprite.custom_size.unwrap() / 2.);
+        //检测是否碰到
         if player_collider.intersects(&pipe_collider) {
             commands.trigger(EndGame);
         }
     }
+    //处理中间得分 区域
     for (sprite, entity) in &pipe_gaps {
+        //这些处理同上
         let pipe_transform = transform_helper.compute_global_transform(entity)?;
         let pipe_collider = Aabb2d::new(pipe_transform.translation().xy(), sprite.custom_size.unwrap() / 2.);
+        //处理一次之后删除掉, 防止重复积分
         if player_collider.intersects(&pipe_collider) {
             commands.trigger(ScoreAdd);
             commands.entity(entity).despawn();
