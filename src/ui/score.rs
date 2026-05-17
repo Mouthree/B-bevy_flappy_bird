@@ -1,6 +1,6 @@
 //!分数的显示
 
-use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{change_detection::DetectChanges, component::Component, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res}}, text::{TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
+use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{change_detection::DetectChanges, component::Component, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res}}, text::{FontWeight, TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
 
 ///分数
 #[derive(Resource, Default)]
@@ -33,6 +33,7 @@ fn score_text_start_up(mut commands: Commands, asset_server: Res<AssetServer>) {
        TextFont {
            font: asset_server.load("fonts/ark-pixel-12px-proportional-zh_cn.ttf"),
            font_size: 33.,
+           weight: FontWeight::BLACK,
            ..default()
        },
        TextColor(SLATE_50.into()),
