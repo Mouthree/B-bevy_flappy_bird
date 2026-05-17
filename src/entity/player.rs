@@ -30,7 +30,7 @@ fn player_start_up(mut commands: Commands, assert_server: Res<AssetServer>) {
        Player,
        Sprite {
            custom_size: Some(Vec2::new(PLAYER_SIZE, PLAYER_SIZE)),
-           image: assert_server.load("lu.png"),
+           image: assert_server.load("images/lu.png"),
            ..default()
        },
        Transform::from_xyz(-CANVAS_SIZE.x / 4., 0., 1.) 

@@ -36,7 +36,7 @@ impl Plugin for Pipe {
 
 ///创建随机高度的管道
 fn pipe_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>) {
-    let image: Handle<Image> = asset_server.load("pipe.png");
+    let image: Handle<Image> = asset_server.load("images/pipe.png");
     //设置图片显示模式为九宫格
     let image_mode = SpriteImageMode::Sliced(
         //具体切割逻辑
