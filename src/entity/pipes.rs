@@ -1,7 +1,7 @@
 //!管道
 use std::time::Duration;
 
-use bevy::{app::{App, FixedUpdate, Plugin, ctrlc::Signal}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, error::Result, observer::On, query::{Or, With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, gizmos::{gizmos::Gizmos, retained::Gizmo}, image::{self, Image}, log::info_span, math::{Vec2, Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::{self, components::Transform, helper::TransformHelper}, utils::default};
+use bevy::{app::{App, FixedUpdate, Plugin, Update, ctrlc::Signal}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, error::Result, observer::On, query::{Or, With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, gizmos::{gizmos::Gizmos, retained::Gizmo}, image::{self, Image}, log::info_span, math::{Vec2, Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::{self, components::Transform, helper::TransformHelper}, utils::default};
 use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED, PLAYER_SIZE}, entity::{pipes, player::Player}, event::{EndGame, ScoreAdd}, ui::score::Score};
 
 ///整个管道
@@ -26,10 +26,10 @@ impl Plugin for Pipe {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (
            pipe_start_up.run_if(on_timer(Duration::from_millis(1000))),
-           pipe_move,
            pipe_del,
            pipe_hit
         ));
+        app.add_systems(Update, pipe_move);
         app.add_observer(score_add);
     }
 }
