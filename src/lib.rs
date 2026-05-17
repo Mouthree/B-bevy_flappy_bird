@@ -3,14 +3,14 @@ pub mod constants;
 pub mod resources;
 pub mod entity;
 pub mod ui;
-pub mod states;
+pub mod event;
 
 use std::default;
 use crate::constants::*;
 use crate::resources::*;
 use crate::entity::*;
 use crate::ui::*;
-use crate::states::*;
+use crate::event::*;
 use bevy::camera::Camera2d;
 use bevy::camera::OrthographicProjection;
 use bevy::camera::Projection;

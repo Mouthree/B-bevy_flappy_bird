@@ -2,7 +2,7 @@
 
 use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::{AssetServer, transformer}, ecs::{component::Component, query::With, system::{Commands, Query, Res, Single}}, input::{ButtonInput, mouse::MouseButton}, math::Vec2, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
 use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}};
-use crate::states::*;
+use crate::event::*;
 
 ///重力
 #[derive(Component)]
