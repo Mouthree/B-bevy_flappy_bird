@@ -1,7 +1,7 @@
 //!玩家所有相关系统
 
-use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, system::{Commands, Query, Res, Single}}, input::{ButtonInput, mouse::MouseButton}, math::Vec2, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
-use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::EndGame};
+use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, system::{Commands, Query, Res, ResMut, Single}}, input::{ButtonInput, mouse::MouseButton}, math::{Vec2, Vec3}, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
+use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::EndGame, ui::score::Score};
 
 
 ///重力
@@ -67,7 +67,14 @@ fn controls(
 }
 
 ///触发了游戏结束之后执行
-fn respawn_on_endgame(_: On<EndGame>) {
-    
+fn respawn_on_endgame(_: On<EndGame>, player: Single<(&mut Transform, &mut Velocity), With<Player>>, mut score: ResMut<Score>) {
+    let (mut transform, mut velocity) = player.into_inner();
+    transform.translation = Vec3 {
+        x: -CANVAS_SIZE.x / 4.,
+        y: 0.,
+        z: 1.
+    };
+    velocity.0 = 0.;
+    score.0 = 0;
 }
 
