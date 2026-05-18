@@ -20,7 +20,7 @@ pub struct PipeBotton;
 #[derive(Component)]
 pub struct PointsGate;
 
-///管道插件
+///管道实体
 pub struct Pipe;
 impl Plugin for Pipe {
     fn build(&self, app: &mut App) {

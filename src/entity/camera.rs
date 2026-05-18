@@ -4,7 +4,7 @@ use bevy::{app::{App, Plugin, Startup}, camera::{Camera2d, OrthographicProjectio
 
 use crate::constants::CANVAS_SIZE;
 
-///相机插件
+///相机实体
 pub struct Camera;
 impl Plugin for Camera {
     fn build(&self, app: &mut App) {

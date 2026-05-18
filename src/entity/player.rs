@@ -12,7 +12,7 @@ pub struct Gravity(pub f32);
 #[derive(Component, Default)]
 pub struct Velocity(pub f32);
 
-///玩家插件
+///玩家实体
 #[derive(Component)]
 #[require(Gravity(700.), Velocity)]
 pub struct Player;
