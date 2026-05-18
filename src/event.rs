@@ -1,4 +1,4 @@
-use bevy::{app::Plugin, ecs::event::Event};
+use bevy::{app::Plugin, ecs::{event::Event, schedule::SystemSet}, state::state::States};
 
 use crate::event::{collision::CollisionEventPlugin, score::ScoreEventPlugin};
 pub mod collision;
@@ -13,6 +13,15 @@ pub struct EndGame;
 #[derive(Event)]
 pub struct ScoreAdd;
 
+///标志位: 暂停
+#[derive(States, Clone, Copy, PartialEq, Eq, Hash, Debug, Default)]
+pub struct Pause(pub bool);
+
+///组标记: 暂停时是否需要运动
+#[derive(SystemSet, Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub struct PausableSys;
+
+///整合所有event的插件
 pub struct EventPlugin;
 impl Plugin for EventPlugin {
     fn build(&self, app: &mut bevy::app::App) {
