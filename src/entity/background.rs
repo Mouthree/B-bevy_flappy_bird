@@ -37,6 +37,23 @@ fn background_start_up(mut commands: Commands,
         })),
         Transform::from_xyz(0., 0., -2.)
     ));
+    
+    commands.spawn((
+        Mesh2d(meshes.add(Rectangle::new(CANVAS_SIZE.x, CANVAS_SIZE.y))),
+        MeshMaterial2d(materials.add(BackgroundMaterial {
+            color_texture: asset_server.load_with_settings(
+                "images/background2.png", 
+                |settings: &mut ImageLoaderSettings| {
+                    settings
+                        .sampler
+                        .get_or_init_descriptor()
+                        .set_address_mode(bevy::image::ImageAddressMode::Repeat);
+                }
+            ),
+            speed: 0.05
+        })),
+        Transform::from_xyz(0., 0., -1.)
+    ));
 }
 
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
