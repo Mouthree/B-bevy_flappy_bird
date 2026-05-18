@@ -1,6 +1,6 @@
 //!分数系统
 
-use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{change_detection::DetectChanges, component::Component, observer::On, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res, ResMut}}, text::{FontWeight, TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
+use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{component::Component, observer::On, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res, ResMut}}, text::{FontWeight, TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
 
 use crate::event::ScoreAdd;
 
