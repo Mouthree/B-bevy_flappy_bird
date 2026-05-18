@@ -51,10 +51,8 @@ fn score_add(_: On<ScoreAdd>, mut score: ResMut<Score>) {
 
 ///更新分数
 fn score_update(mut query: Query<&mut Text, With<ScoreTextSign>>, score: Res<Score>) {
-    if score.is_changed() {
-        for mut span in &mut query {
-            span.0 = score.0.to_string();
-        }
+    for mut span in &mut query {
+        span.0 = score.0.to_string();
     }
 }
 
