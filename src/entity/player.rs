@@ -66,7 +66,7 @@ fn controls(
     }
 }
 
-///触发了游戏结束时间之后
+///触发了游戏结束之后执行
 fn respawn_on_endgame(_: On<EndGame>) {
     
 }
