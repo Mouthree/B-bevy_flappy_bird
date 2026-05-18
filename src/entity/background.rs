@@ -33,7 +33,7 @@ fn background_start_up(mut commands: Commands,
                         .set_address_mode(bevy::image::ImageAddressMode::Repeat);
                 }
             ),
-            speed: 0.2
+            speed: 0.15
         })),
         Transform::from_xyz(0., 0., -2.)
     ));
@@ -50,7 +50,7 @@ fn background_start_up(mut commands: Commands,
                         .set_address_mode(bevy::image::ImageAddressMode::Repeat);
                 }
             ),
-            speed: 0.05
+            speed: 0.04
         })),
         Transform::from_xyz(0., 0., -1.)
     ));
