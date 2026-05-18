@@ -1,6 +1,8 @@
-//!分数的显示
+//!分数系统
 
-use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{change_detection::DetectChanges, component::Component, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res}}, text::{FontWeight, TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
+use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{change_detection::DetectChanges, component::Component, observer::On, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res, ResMut}}, text::{FontWeight, TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
+
+use crate::event::ScoreAdd;
 
 ///分数
 #[derive(Resource, Default)]
@@ -14,9 +16,10 @@ pub struct ScoreTextSign;
 pub struct ScoreText;
 impl Plugin for ScoreText {
     fn build(&self, app: &mut App) {
-        app.init_resource::<Score>();
-        app.add_systems(Startup, score_text_start_up);
-        app.add_systems(Update, score_update.run_if(resource_changed::<Score>));
+        app.init_resource::<Score>()
+            .add_systems(Startup, score_text_start_up)
+            .add_systems(Update, score_update.run_if(resource_changed::<Score>))
+            .add_observer(score_add);
     }
 }
 
@@ -41,6 +44,11 @@ fn score_text_start_up(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
+///触发加分事件的时候加分
+fn score_add(_: On<ScoreAdd>, mut score: ResMut<Score>) {
+    score.0 += 1;
+}
+
 ///更新分数
 fn score_update(mut query: Query<&mut Text, With<ScoreTextSign>>, score: Res<Score>) {
     if score.is_changed() {
@@ -49,3 +57,5 @@ fn score_update(mut query: Query<&mut Text, With<ScoreTextSign>>, score: Res<Sco
         }
     }
 }
+
+

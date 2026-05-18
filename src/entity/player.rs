@@ -1,8 +1,8 @@
 //!玩家所有相关系统
 
-use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::{AssetServer, transformer}, ecs::{component::Component, query::With, system::{Commands, Query, Res, Single}}, input::{ButtonInput, mouse::MouseButton}, math::Vec2, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
-use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}};
-use crate::event::*;
+use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, system::{Commands, Query, Res, Single}}, input::{ButtonInput, mouse::MouseButton}, math::Vec2, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
+use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::EndGame};
+
 
 ///重力
 #[derive(Component)]
@@ -21,7 +21,8 @@ impl Plugin for Player {
         app
             .add_systems(Startup, player_start_up)
             .add_systems(FixedUpdate, gravity)
-            .add_systems(Update, controls);
+            .add_systems(Update, controls)
+            .add_observer(respawn_on_endgame);
     }
 }
 ///创建玩家实体
@@ -65,10 +66,7 @@ fn controls(
     }
 }
 
-///碰到边界触发事件
-fn check_in_bounds(player: Single<&Transform, With<Player>>, mut commands: Commands) {
-    if player.translation.y < -CANVAS_SIZE.y / 2. - PLAYER_SIZE || 
-    player.translation.y > CANVAS_SIZE.y / 2. + PLAYER_SIZE {
-        commands.trigger(EndGame);
-    }
+///触发了游戏结束时间之后
+fn respawn_on_endgame(_: On<EndGame>) {
+    
 }

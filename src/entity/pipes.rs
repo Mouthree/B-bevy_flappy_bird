@@ -1,8 +1,8 @@
 //!管道
 use std::time::Duration;
 
-use bevy::{app::{App, FixedUpdate, Plugin, Update, ctrlc::Signal}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, error::Result, observer::On, query::{Or, With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, gizmos::{gizmos::Gizmos, retained::Gizmo}, image::{self, Image}, log::info_span, math::{Vec2, Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Fixed, Time, common_conditions::on_timer}, transform::{self, components::Transform, helper::TransformHelper}, utils::default};
-use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED, PLAYER_SIZE}, entity::{pipes, player::Player}, event::{EndGame, ScoreAdd}, ui::score::Score};
+use bevy::{app::{App, FixedUpdate, Plugin, Update}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, query::{With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res}}, image::{Image}, math::{Vec2}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Time, common_conditions::on_timer}, transform::{ components::Transform}, utils::default};
+use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED}};
 
 ///整个管道
 #[derive(Component)]
@@ -26,11 +26,10 @@ impl Plugin for Pipe {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (
            pipe_start_up.run_if(on_timer(Duration::from_millis(1000))),
-           pipe_del,
-           pipe_hit
+           pipe_del
         ));
         app.add_systems(Update, pipe_move);
-        app.add_observer(score_add);
+        
     }
 }
 
@@ -108,47 +107,4 @@ fn pipe_del(mut commands: Commands, pipes: Query<(Entity, &Transform), With<Pipe
             commands.entity(entity).despawn();
         }
     }
-}
-
-///计算对管道的碰撞
-fn pipe_hit(
-    mut commands: Commands,
-    player: Single<(&Sprite, Entity), With<Player>>,
-    pipe_segments: Query<(&Sprite, Entity), Or<(With<PipeTop>, With<PipeBotton>)>>,
-    pipe_gaps: Query<(&Sprite, Entity), With<PointsGate>>,
-    mut gizmos: Gizmos,
-    transform_helper: TransformHelper
-) -> Result<()> {
-    //获取到最新的player位置
-    let player_transform = transform_helper.compute_global_transform(player.1)?;
-    //创建一个以玩家中心为原点, 玩家一半大的为半径的这个碰撞箱
-    let player_collider = BoundingCircle::new(player_transform.translation().xy(), PLAYER_SIZE / 2.);
-    //处理所有的管道(上下两部分)
-    for (sprite, entity) in &pipe_segments {
-        //获取管道实际坐标
-        let pipe_transform = transform_helper.compute_global_transform(entity)?;
-        //方的碰撞箱
-        let pipe_collider = Aabb2d::new(pipe_transform.translation().xy(), sprite.custom_size.unwrap() / 2.);
-        //检测是否碰到
-        if player_collider.intersects(&pipe_collider) {
-            commands.trigger(EndGame);
-        }
-    }
-    //处理中间得分 区域
-    for (sprite, entity) in &pipe_gaps {
-        //这些处理同上
-        let pipe_transform = transform_helper.compute_global_transform(entity)?;
-        let pipe_collider = Aabb2d::new(pipe_transform.translation().xy(), sprite.custom_size.unwrap() / 2.);
-        //处理一次之后删除掉, 防止重复积分
-        if player_collider.intersects(&pipe_collider) {
-            commands.trigger(ScoreAdd);
-            commands.entity(entity).despawn();
-        }
-    }
-    Ok(())
-}
-
-///触发加分事件的时候加分
-fn score_add(_: On<ScoreAdd>, mut score: ResMut<Score>) {
-    score.0 += 1;
 }
