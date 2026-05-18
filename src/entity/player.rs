@@ -66,7 +66,7 @@ fn controls(
     }
 }
 
-///触发了游戏结束之后执行
+///游戏结束之后的处理
 fn respawn_on_endgame(_: On<EndGame>, player: Single<(&mut Transform, &mut Velocity), With<Player>>, mut score: ResMut<Score>) {
     let (mut transform, mut velocity) = player.into_inner();
     transform.translation = Vec3 {

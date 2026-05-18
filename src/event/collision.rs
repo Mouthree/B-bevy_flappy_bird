@@ -4,9 +4,9 @@ use bevy::{app::{App, FixedUpdate, Plugin}, ecs::{entity::Entity, error::Result,
 
 use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, entity::{pipes::{PipeBotton, PipeTop, PointsGate}, player::Player}, event::{EndGame, ScoreAdd}};
 
-///碰撞检测的插件
-pub struct CollisionPlugin;
-impl Plugin for CollisionPlugin {
+///碰撞事件
+pub struct CollisionEventPlugin;
+impl Plugin for CollisionEventPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (check_in_bounds, pipe_hit));
     }
