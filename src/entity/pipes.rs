@@ -34,6 +34,7 @@ impl Plugin for Pipe {
 }
 
 ///创建随机高度的管道
+//TODO: 随机管道现在完全就是固定的规律, 尝试添加随机数来使管道更随机, 同时出来的频率需要在1 +- 0.3秒浮动
 fn pipe_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>) {
     let image: Handle<Image> = asset_server.load("images/pipe.png");
     //设置图片显示模式为九宫格
