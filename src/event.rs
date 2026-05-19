@@ -1,4 +1,4 @@
-use bevy::{app::Plugin, ecs::{event::Event, schedule::SystemSet}, state::state::States};
+use bevy::{app::{Plugin, Update}, ecs::{event::Event, schedule::{IntoScheduleConfigs, SystemSet}}, state::{app::AppExtStates, condition::in_state, state::States}};
 
 use crate::event::{collision::CollisionEventPlugin, score::ScoreEventPlugin};
 pub mod collision;
@@ -25,6 +25,9 @@ pub struct PausableSys;
 pub struct EventPlugin;
 impl Plugin for EventPlugin {
     fn build(&self, app: &mut bevy::app::App) {
-        app.add_plugins((CollisionEventPlugin, ScoreEventPlugin));
+        app
+            .add_plugins((CollisionEventPlugin, ScoreEventPlugin))
+            .init_state::<Pause>()
+            .configure_sets(Update, PausableSys.run_if(in_state(Pause(false))));
     }
 }
