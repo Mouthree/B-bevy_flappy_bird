@@ -1,8 +1,11 @@
 //!管道
-use std::time::Duration;
 
-use bevy::{app::{App, FixedUpdate, Plugin, Update}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, query::{With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res}}, image::{Image}, math::{Vec2}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Time, common_conditions::on_timer}, transform::{ components::Transform}, utils::default};
+use bevy::{app::{App, FixedUpdate, Plugin, Update}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, query::With, resource::Resource, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut}}, image::Image, math::Vec2, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Time, Timer, TimerMode}, transform::components::Transform, utils::default};
 use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED}, event::PausableSys};
+
+///管道移动计时器
+#[derive(Resource)]
+struct PipeTimer(Timer);
 
 ///整个管道
 #[derive(Component)]
@@ -25,16 +28,25 @@ pub struct Pipe;
 impl Plugin for Pipe {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (
-           pipe_start_up.run_if(on_timer(Duration::from_millis(1000))),
+           pipe_start_up,
            pipe_del
-           ).in_set(PausableSys));
-        app.add_systems(Update, pipe_move.in_set(PausableSys));
+           ).in_set(PausableSys))
+        .add_systems(Update, pipe_move.in_set(PausableSys))
+        .insert_resource(PipeTimer(
+            Timer::from_seconds(1.0, TimerMode::Repeating)
+        ));
     }
 }
 
 ///创建随机高度的管道
 //TODO: 随机管道现在完全就是固定的规律, 尝试添加随机数来使管道更随机, 同时出来的频率需要在1 +- 0.3秒浮动
-fn pipe_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>) {
+fn pipe_start_up(mut commands: Commands, asset_server: Res<AssetServer>, time: Res<Time>, mut timer: ResMut<PipeTimer>) {
+    //每次调用就加一下, 到一秒了才生成
+    timer.0.tick(time.delta());
+    if !timer.0.just_finished() {
+        return;
+    }
+    
     let image: Handle<Image> = asset_server.load("images/pipe.png");
     //设置图片显示模式为九宫格
     let image_mode = SpriteImageMode::Sliced(

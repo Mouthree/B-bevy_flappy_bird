@@ -6,11 +6,11 @@ use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::{EndGame, PausableSys}
 
 ///重力
 #[derive(Component)]
-pub struct Gravity(pub f32);
+struct Gravity(f32);
 
 ///速度
 #[derive(Component, Default)]
-pub struct Velocity(pub f32);
+struct Velocity(f32);
 
 ///玩家实体
 #[derive(Component)]

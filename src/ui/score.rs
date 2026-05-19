@@ -10,7 +10,7 @@ pub struct Score(pub u32);
 
 ///标记文字本体
 #[derive(Component)]
-pub struct ScoreTextSign;
+struct ScoreTextSign;
 
 ///分数文本插件
 pub struct ScoreText;
