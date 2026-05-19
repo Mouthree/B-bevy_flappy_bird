@@ -2,6 +2,8 @@
 
 use bevy::{app::{App, Plugin, Startup, Update}, asset::AssetServer, color::palettes::tailwind::SLATE_50, ecs::{component::Component, query::With, resource::Resource, schedule::{IntoScheduleConfigs, common_conditions::resource_changed}, system::{Commands, Query, Res}}, text::{FontWeight, TextColor, TextFont, TextLayout}, ui::{Node, percent, px, widget::Text}, utils::default};
 
+use crate::event::PausableSys;
+
 ///分数
 #[derive(Resource, Default)]
 pub struct Score(pub u32);
@@ -16,7 +18,7 @@ impl Plugin for ScoreText {
     fn build(&self, app: &mut App) {
         app.init_resource::<Score>()
             .add_systems(Startup, score_text_start_up)
-            .add_systems(Update, score_update.run_if(resource_changed::<Score>));
+            .add_systems(Update, score_update.run_if(resource_changed::<Score>).in_set(PausableSys));
     }
 }
 

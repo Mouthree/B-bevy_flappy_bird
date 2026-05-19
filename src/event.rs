@@ -3,6 +3,7 @@ use bevy::{app::{Plugin, Update}, ecs::{event::Event, schedule::{IntoScheduleCon
 use crate::event::{collision::CollisionEventPlugin, score::ScoreEventPlugin};
 pub mod collision;
 pub mod score;
+pub mod pause;
 
 
 ///标志位: 游戏结束

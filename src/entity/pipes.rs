@@ -2,7 +2,7 @@
 use std::time::Duration;
 
 use bevy::{app::{App, FixedUpdate, Plugin, Update}, asset::{AssetServer, Handle}, camera::visibility::Visibility, color::Color, ecs::{children, component::Component, entity::Entity, query::{With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Res}}, image::{Image}, math::{Vec2}, sprite::{BorderRect, SliceScaleMode, Sprite, SpriteImageMode, TextureSlicer}, time::{Time, common_conditions::on_timer}, transform::{ components::Transform}, utils::default};
-use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED}};
+use crate::{constants::{CANVAS_SIZE, GAP_SIZE, PIPE_SIZE, PIPE_SPEED}, event::PausableSys};
 
 ///整个管道
 #[derive(Component)]
@@ -27,9 +27,8 @@ impl Plugin for Pipe {
         app.add_systems(FixedUpdate, (
            pipe_start_up.run_if(on_timer(Duration::from_millis(1000))),
            pipe_del
-        ));
-        app.add_systems(Update, pipe_move);
-        
+           ).in_set(PausableSys));
+        app.add_systems(Update, pipe_move.in_set(PausableSys));
     }
 }
 

@@ -1,14 +1,14 @@
 //!碰撞系统
 
-use bevy::{app::{App, FixedUpdate, Plugin}, ecs::{entity::Entity, error::Result, query::{Or, With}, system::{Commands, Query, Single}}, math::{Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::Sprite, transform::{components::Transform, helper::TransformHelper}};
+use bevy::{app::{App, FixedUpdate, Plugin}, ecs::{entity::Entity, error::Result, query::{Or, With}, schedule::IntoScheduleConfigs, system::{Commands, Query, Single}}, math::{Vec3Swizzles, bounding::{Aabb2d, BoundingCircle, IntersectsVolume}}, sprite::Sprite, transform::{components::Transform, helper::TransformHelper}};
 
-use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, entity::{pipes::{PipeBotton, PipeTop, PointsGate}, player::Player}, event::{EndGame, ScoreAdd}};
+use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, entity::{pipes::{PipeBotton, PipeTop, PointsGate}, player::Player}, event::{EndGame, PausableSys, ScoreAdd}};
 
 ///碰撞事件
 pub struct CollisionEventPlugin;
 impl Plugin for CollisionEventPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(FixedUpdate, (check_in_bounds, pipe_hit));
+        app.add_systems(FixedUpdate, (check_in_bounds, pipe_hit).in_set(PausableSys));
     }
 }
 
