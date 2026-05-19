@@ -12,6 +12,9 @@ pub mod event;
 pub struct Game;
 impl Plugin for Game {
     fn build(&self, app: &mut bevy::app::App) {
-        app.add_plugins((EntityPlugin, EventPlugin, UIPlugin));
+        app.add_plugins((
+            EntityPlugin, 
+            EventPlugin, 
+            UIPlugin));
     }
 }
