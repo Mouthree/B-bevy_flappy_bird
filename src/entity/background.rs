@@ -12,7 +12,7 @@ impl Plugin for BackgroundPlugin {
         app
             .add_systems(Startup, background_start_up)
             .add_plugins(Material2dPlugin::<BackgroundMaterial>::default())
-            .add_systems(Update, background_timer_tick.in_set(PausableSys));
+            .add_systems(Update, background_timer_tick);
     }
 }
 

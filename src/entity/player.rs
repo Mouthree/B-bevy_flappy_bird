@@ -1,7 +1,7 @@
 //!玩家所有相关系统
 
-use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, input::{ButtonInput, mouse::MouseButton}, math::{Vec2, Vec3}, sprite::Sprite, time::Time, transform::components::Transform, utils::default};
-use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::{EndGame, PausableSys}, ui::score::Score};
+use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, input::{ButtonInput, mouse::MouseButton}, math::{Vec2, Vec3}, sprite::Sprite, state::state::OnEnter, time::Time, transform::components::Transform, utils::default};
+use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::{EndGame, PausableSys, Screen}, ui::score::Score};
 
 
 ///重力
@@ -19,7 +19,7 @@ pub struct Player;
 impl Plugin for Player {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Startup, player_start_up)
+            .add_systems(OnEnter(Screen::Game), player_start_up)
             .add_systems(FixedUpdate, gravity.in_set(PausableSys))
             .add_systems(Update, controls.in_set(PausableSys))
             .add_observer(respawn_on_endgame);
