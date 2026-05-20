@@ -1,6 +1,6 @@
 //!玩家所有相关系统
 
-use bevy::{app::{App, FixedUpdate, Plugin, Startup, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, input::{ButtonInput, mouse::MouseButton}, math::{Vec2, Vec3}, sprite::Sprite, state::state::OnEnter, time::Time, transform::components::Transform, utils::default};
+use bevy::{app::{App, FixedUpdate, Plugin, Update}, asset::AssetServer, ecs::{component::Component, observer::On, query::With, schedule::IntoScheduleConfigs, system::{Commands, Query, Res, ResMut, Single}}, input::{ButtonInput, mouse::MouseButton}, math::{Vec2, Vec3}, sprite::Sprite, state::state::OnEnter, time::Time, transform::components::Transform, utils::default};
 use crate::{constants::{CANVAS_SIZE, PLAYER_SIZE}, event::{EndGame, PausableSys, Screen}, ui::score::Score};
 
 

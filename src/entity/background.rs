@@ -1,8 +1,8 @@
 //!背景相关
 
-use bevy::{app::{Plugin, Startup, Update}, asset::{Asset, AssetServer, Assets, Handle}, ecs::{schedule::IntoScheduleConfigs, system::{Commands, Res, ResMut}}, image::{Image, ImageLoaderSettings}, math::primitives::Rectangle, mesh::{Mesh, Mesh2d}, reflect::TypePath, render::render_resource::AsBindGroup, shader::ShaderRef, sprite_render::{AlphaMode2d, Material2d, Material2dPlugin, MeshMaterial2d}, time::{Time}, transform::components::Transform};
+use bevy::{app::{Plugin, Startup, Update}, asset::{Asset, AssetServer, Assets, Handle}, ecs::{schedule::IntoScheduleConfigs, system::{Commands, Res, ResMut}}, image::{Image, ImageLoaderSettings}, math::primitives::Rectangle, mesh::{Mesh, Mesh2d}, reflect::TypePath, render::render_resource::AsBindGroup, shader::ShaderRef, sprite_render::{AlphaMode2d, Material2d, Material2dPlugin, MeshMaterial2d}, state::condition::in_state, time::Time, transform::components::Transform};
 
-use crate::{constants::CANVAS_SIZE, event::PausableSys};
+use crate::{constants::CANVAS_SIZE, event::{Menu}};
 
 
 ///背景实体
@@ -12,7 +12,7 @@ impl Plugin for BackgroundPlugin {
         app
             .add_systems(Startup, background_start_up)
             .add_plugins(Material2dPlugin::<BackgroundMaterial>::default())
-            .add_systems(Update, background_timer_tick);
+            .add_systems(Update, background_timer_tick.run_if(in_state(Menu::None)));
     }
 }
 
