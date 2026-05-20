@@ -1,13 +1,13 @@
 //!暂停时的界面, 包含暗色遮罩以及暂停ui
 
-use bevy::{app::{Plugin, Update}, color::Color, ecs::system::Commands, state::state_scoped::DespawnOnExit, ui::{BackgroundColor, GlobalZIndex, Node, percent}, utils::default};
+use bevy::{app::{Plugin, Update}, color::Color, ecs::system::Commands, state::{state::OnEnter, state_scoped::DespawnOnExit}, ui::{BackgroundColor, GlobalZIndex, Node, percent}, utils::default};
 
 use crate::event::Pause;
 
 pub struct PauseUI;
 impl Plugin for PauseUI {
     fn build(&self, app: &mut bevy::app::App) {
-        app.add_systems(Update, pause_dark_start_up);
+        app.add_systems(OnEnter(Pause(true)), pause_dark_start_up);
     }
 }
 
