@@ -17,46 +17,36 @@ impl Plugin for BackgroundPlugin {
 }
 
 ///创建背景实体
-fn background_start_up(mut commands: Commands, 
+fn background_start_up(
+    mut commands: Commands, 
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<BackgroundMaterial>>,
     asset_server: Res<AssetServer>
 ) {
-    //创建背景一
     commands.spawn((
         Mesh2d(meshes.add(Rectangle::new(CANVAS_SIZE.x, CANVAS_SIZE.y))),
         MeshMaterial2d(materials.add(BackgroundMaterial {
-            color_texture: asset_server.load_with_settings(
-                "images/background1.png", 
-                |settings: &mut ImageLoaderSettings| {
-                    settings
-                        .sampler
-                        .get_or_init_descriptor()
+            bg_texture: asset_server.load_with_settings(
+                "images/background1.png",
+                |s: &mut ImageLoaderSettings| {
+                    s.sampler.get_or_init_descriptor()
                         .set_address_mode(bevy::image::ImageAddressMode::Repeat);
-                }
+                },
             ),
-            speed: 0.15,
-            offset: 0.
-        })),
-        Transform::from_xyz(0., 0., -2.)
-    ));
-    //创建背景2
-    commands.spawn((
-        Mesh2d(meshes.add(Rectangle::new(CANVAS_SIZE.x, CANVAS_SIZE.y))),
-        MeshMaterial2d(materials.add(BackgroundMaterial {
-            color_texture: asset_server.load_with_settings(
-                "images/background2.png", 
-                |settings: &mut ImageLoaderSettings| {
-                    settings
-                        .sampler
-                        .get_or_init_descriptor()
+            cloud_texture: asset_server.load_with_settings(
+                "images/background2.png",
+                |s: &mut ImageLoaderSettings| {
+                    s.sampler.get_or_init_descriptor()
                         .set_address_mode(bevy::image::ImageAddressMode::Repeat);
-                }
+                },
             ),
-            speed: 0.04,
-            offset: 0.
+            speed1: 0.15,
+            speed2: 0.04,
+            offset1: 0.,
+            offset2: 0.,
+            blur: 1.,
         })),
-        Transform::from_xyz(0., 0., -1.)
+        Transform::from_xyz(0., 0., -2.),
     ));
 }
 
@@ -64,11 +54,23 @@ fn background_start_up(mut commands: Commands,
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct BackgroundMaterial {
     #[texture(0)]
-    #[sampler(1)]
-    pub color_texture: Handle<Image>,
-    pub speed: f32,
-    #[uniform(2)]
-    pub offset: f32
+    #[sampler(2)]
+    pub bg_texture: Handle<Image>,
+
+    #[texture(1)]
+    pub cloud_texture: Handle<Image>,
+
+    pub speed1: f32,
+    pub speed2: f32,
+
+    #[uniform(3)]
+    pub offset1: f32,
+
+    #[uniform(4)]
+    pub offset2: f32,
+
+    #[uniform(5)]
+    pub blur: f32,
 }
 
 //TODO: 没太懂
@@ -81,10 +83,11 @@ impl Material2d for BackgroundMaterial {
     }
 }
 
-///背景时钟
+///背景刷洗
 fn background_timer_tick(time: Res<Time>, mut materials: ResMut<Assets<BackgroundMaterial>>) {
     let dt = time.delta_secs();
     for (_, material) in materials.iter_mut() {
-        material.offset += dt * material.speed;
+        material.offset1 += dt * material.speed1;
+        material.offset2 += dt * material.speed2;
     }
 }
