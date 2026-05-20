@@ -3,6 +3,7 @@ use bevy::app::Plugin;
 use crate::ui::score::ScoreText;
 
 pub mod score;
+pub mod pause;
 
 ///UI
 pub struct UIPlugin;

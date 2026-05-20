@@ -14,11 +14,11 @@ pub struct EndGame;
 #[derive(Event)]
 pub struct ScoreAdd;
 
-///标志位: 暂停
+///状态: 暂停
 #[derive(States, Clone, Copy, PartialEq, Eq, Hash, Debug, Default)]
 pub struct Pause(pub bool);
 
-///组标记: 暂停时是否需要运动
+///标记: 暂停时是否需要运动
 #[derive(SystemSet, Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub struct PausableSys;
 
