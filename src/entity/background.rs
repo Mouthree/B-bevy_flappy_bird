@@ -104,13 +104,12 @@ fn update_blur(
         Screen::Main => 3.0,
         Screen::Game => 0.0,
     };
-
     for (_, material) in materials.iter_mut() {
-        if (target - material.blur).abs() < 0.02 {
-            material.blur = target;
-        } else {
-            let step = 3.0 * time.delta_secs();
-            material.blur += (target - material.blur).signum() * step.min((target - material.blur).abs());
+        let step = 3.0 * time.delta_secs();
+        if material.blur < target {
+            material.blur = (material.blur + step).min(target);
+        } else if material.blur > target {
+            material.blur = (material.blur - step).max(target);
         }
     }
 }
