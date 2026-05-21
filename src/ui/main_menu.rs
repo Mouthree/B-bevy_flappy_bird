@@ -12,6 +12,7 @@ impl Plugin for MainMenuUI {
     }
 }
 
+///主界面和游戏界面的切换
 fn start_game(current: Res<State<Screen>>, mut next: ResMut<NextState<Screen>>) {
     match current.get() {
         Screen::Main => next.set(Screen::Game),

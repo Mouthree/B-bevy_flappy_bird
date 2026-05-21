@@ -17,14 +17,10 @@ fn composite(uv: vec2<f32>) -> vec4<f32> {
 
 @fragment
 fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
-    if blur < 1.0 {
-        return composite(mesh.uv);
-    }
-
+    let sigma = max(blur, 0.01);
     let ts = 1.0 / vec2<f32>(textureDimensions(bg_texture));
-    let sigma = blur;
     let two_sigma2 = 2.0 * sigma * sigma;
-    let radius = i32(ceil(sigma * 3.0));
+    let radius = max(i32(ceil(sigma * 3.0)), 0);
 
     var color = vec4(0.0);
     var weight_sum = 0.0;
@@ -35,7 +31,7 @@ fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
             let dist2 = f32(x * x + y * y) * 0.25;
             let weight = exp(-dist2 / two_sigma2);
 
-            color += composite(uv) * weight;   // ← 对合成结果采样
+            color += composite(uv) * weight;
             weight_sum += weight;
         }
     }

@@ -1,8 +1,8 @@
 //!背景相关
 
-use bevy::{app::{Plugin, Startup, Update}, asset::{Asset, AssetServer, Assets, Handle}, ecs::{schedule::IntoScheduleConfigs, system::{Commands, Res, ResMut}}, image::{Image, ImageLoaderSettings}, math::primitives::Rectangle, mesh::{Mesh, Mesh2d}, reflect::TypePath, render::render_resource::AsBindGroup, shader::ShaderRef, sprite_render::{AlphaMode2d, Material2d, Material2dPlugin, MeshMaterial2d}, state::condition::in_state, time::Time, transform::components::Transform};
+use bevy::{app::{Plugin, Startup, Update}, asset::{Asset, AssetServer, Assets, Handle}, ecs::{schedule::IntoScheduleConfigs, system::{Commands, Res, ResMut}}, image::{Image, ImageLoaderSettings}, math::primitives::Rectangle, mesh::{Mesh, Mesh2d}, reflect::TypePath, render::render_resource::AsBindGroup, shader::ShaderRef, sprite_render::{AlphaMode2d, Material2d, Material2dPlugin, MeshMaterial2d}, state::{condition::in_state, state::{OnEnter, State}}, time::Time, transform::components::Transform};
 
-use crate::{constants::CANVAS_SIZE, event::{Menu}};
+use crate::{constants::CANVAS_SIZE, event::{Menu, Screen}};
 
 
 ///背景实体
@@ -12,7 +12,9 @@ impl Plugin for BackgroundPlugin {
         app
             .add_systems(Startup, background_start_up)
             .add_plugins(Material2dPlugin::<BackgroundMaterial>::default())
-            .add_systems(Update, background_timer_tick.run_if(in_state(Menu::None)));
+            .add_systems(Update, background_timer_tick.run_if(in_state(Menu::None)))
+            .add_systems(Update, update_blur)
+        ;
     }
 }
 
@@ -44,7 +46,7 @@ fn background_start_up(
             speed2: 0.04,
             offset1: 0.,
             offset2: 0.,
-            blur: 1.,
+            blur: 3.,
         })),
         Transform::from_xyz(0., 0., -2.),
     ));
@@ -83,11 +85,32 @@ impl Material2d for BackgroundMaterial {
     }
 }
 
-///背景刷洗
+///背景刷新
 fn background_timer_tick(time: Res<Time>, mut materials: ResMut<Assets<BackgroundMaterial>>) {
     let dt = time.delta_secs();
     for (_, material) in materials.iter_mut() {
         material.offset1 += dt * material.speed1;
         material.offset2 += dt * material.speed2;
+    }
+}
+
+///消除虚化
+fn update_blur(
+    screen: Res<State<Screen>>,
+    time: Res<Time>,
+    mut materials: ResMut<Assets<BackgroundMaterial>>,
+) {
+    let target = match screen.get() {
+        Screen::Main => 3.0,
+        Screen::Game => 0.0,
+    };
+
+    for (_, material) in materials.iter_mut() {
+        if (target - material.blur).abs() < 0.02 {
+            material.blur = target;
+        } else {
+            let step = 3.0 * time.delta_secs();
+            material.blur += (target - material.blur).signum() * step.min((target - material.blur).abs());
+        }
     }
 }
